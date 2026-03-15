@@ -1,6 +1,7 @@
 import usermodel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { sendemail } from "../services/mail.service.js";
+import mongoose from "mongoose";
 
 //rigster controller
 export async function register(req, res) {
@@ -54,4 +55,39 @@ export async function register(req, res) {
     console.error(err);
     res.status(500).json({ message: "Internal server error", success: false });
   }
+}
+
+export async function verifyemail(req,res) {
+  try{
+    const { token } = req.query
+
+    const decoded = jwt.verify(token,process.env.JWT_SECRET)
+    const user = await  usermodel.findOne({email:decoded.email })
+    if(!user){
+       return res.status(402).json({
+        message:"inalid token ",
+        success: false ,
+        err:"user not found "
+      })
+    }
+
+    user.verified = true 
+
+
+    await user.save();
+
+   const html = `
+   <p>Hi ${user.username},</p>
+   <p>Your email has been successfully verified. You can now log in to your account and start using our services.</p>
+   <p>Best regards,<br>The Perplexity Team</p>
+   `;
+
+   res.send(html);
+   
+
+  }
+ catch (err) {         
+        console.error(err);
+        res.status(500).json({ message: err.message, success: false }); 
+    }
 }
