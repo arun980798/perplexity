@@ -5,8 +5,7 @@ import { registerValidator } from "../validators/auth.validator.js";
 
 const authrouter = Router();
 
-authrouter.post("/rigster",registerValidator,register)
-
+authrouter.post("/register", registerValidator, register)
 
 
 export default authrouter

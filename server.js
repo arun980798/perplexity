@@ -5,6 +5,7 @@ import connectDB from "./src/config/database.js";
 dotenv.config();
 connectDB() 
 
-app.listen(3000, () => {
+
+app.listen(8000, () => {
     console.log(`Server running on port `);
   });
